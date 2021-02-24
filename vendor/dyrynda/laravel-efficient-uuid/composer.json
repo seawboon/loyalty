@@ -1,0 +1,34 @@
+{
+  "name": "dyrynda/laravel-efficient-uuid",
+  "type": "utility",
+  "description": "A package to extend Laravel migrations adding a more efficient storage of UUID fields in your database",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michael Dyrynda",
+      "email": "michael@dyrynda.com.au",
+      "homepage": "https://dyrynda.com.au"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "illuminate/container": "^6.0",
+    "illuminate/database": "^6.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.0",
+    "mockery/mockery": "^1.2.3",
+    "orchestra/testbench": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dyrynda\\Database\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "minimum-stability": "stable"
+}
