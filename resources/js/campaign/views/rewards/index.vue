@@ -61,7 +61,7 @@
                       </v-layout>
                     </template>
                   </v-img>
-                  <v-container 
+                  <v-container
                     class="pa-3"
                     grid-list-lg
                     fluid
@@ -106,7 +106,7 @@
                   </v-card-title>
                   <v-card-actions class="mx-2 mb-2" v-if="Object.keys(campaign.redeemOptions).length > 0">
                     <v-btn color="light" v-if="! $auth.check()" :to="{name: 'login'}" block large>{{ $t('log_in_to_redeem') }}</v-btn>
-                    <v-menu 
+                    <v-menu
                       v-if="$auth.check()"
                       bottom
                       transition="slide-y-transition"
@@ -115,7 +115,7 @@
                         <v-btn
                           :disabled="((points / reward.points) * 100) < 100"
                           :loading="points === null"
-                          block 
+                          block
                           large
                           v-on="on"
                         >
@@ -179,11 +179,11 @@
         <v-card-title class="headline">{{ $t('show_qr_to_merchant') }}</v-card-title>
         <v-card-text v-if="dialog.redeem.qrVisible && connectionError === false && rewardRedeemed === null">
           <p class="body-1">{{ $t('keep_dialog_open_until_confirmation') }}</p>
-          <qr-code 
+          <qr-code
             class="qr-100"
             :text="dialog.redeem.qrUrl"
             color="#000000"
-            bg-color="transparent" 
+            bg-color="transparent"
             error-level="Q"
           >
           </qr-code>
@@ -217,14 +217,14 @@
     <v-dialog v-model="dialog.redeem.merchant" persistent max-width="320">
       <v-card>
         <v-card-title class="headline">{{ $t('let_merchant_enter_code') }}</v-card-title>
-        <v-form 
+        <v-form
           v-show="!merchantCode.verfied"
           data-vv-scope="merchantCode"
-          :model="merchantCode" 
+          :model="merchantCode"
           @submit.prevent="verifyMerchantCode"
           autocomplete="off"
           method="post"
-          accept-charset="UTF-8" 
+          accept-charset="UTF-8"
         >
           <v-card-text>
             <p class="body-1">{{ $t('hand_over_device_to_merchant') }}</p>
@@ -241,6 +241,18 @@
             :label="$t('enter_code_here')"
             class="title"
             ></v-text-field>
+
+            <v-text-field
+            v-model="merchantCode.remarks"
+            data-vv-name="remarks"
+            :data-vv-as="$t('remarks')"
+            :type="'text'"
+            :error-messages="errors.collect('merchantCode.remarks')"
+            outline
+            :label="$t('enter_remarks_here')"
+            class="title"
+            ></v-text-field>
+
            </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -249,21 +261,21 @@
           </v-card-actions>
         </v-form>
 
-        <v-form 
+        <v-form
           v-if="merchantCode.verfied && !merchantCode.processed"
           data-vv-scope="merchantCodeVerified"
-          :model="merchantCodeVerified" 
+          :model="merchantCodeVerified"
           @submit.prevent="processMerchantCode"
           autocomplete="off"
           method="post"
-          accept-charset="UTF-8" 
+          accept-charset="UTF-8"
         >
           <v-card-text>
             <p class="body-1" v-html="$t('code_correct_select_reward')"></p>
               <v-autocomplete
                 v-model="merchantCodeVerified.reward"
                 :items="rewards"
-                item-value="0" 
+                item-value="0"
                 item-text="1"
                 :label="$t('reward')"
                 :data-vv-as="$t('reward')"
@@ -278,7 +290,7 @@
                 v-if="Object.keys(segments).length > 0"
                 v-model="merchantCodeVerified.segments"
                 :items="segments"
-                item-value="0" 
+                item-value="0"
                 item-text="1"
                 :label="$t('segments') + ' ' + $t('_optional_')"
                 :data-vv-as="$t('segments')"
@@ -384,7 +396,8 @@
           loading: false,
           verfied: false,
           processed: false,
-          code: ''
+          code: '',
+          remarks: ''
         },
         merchantCodeVerified: {
           loading: false,
@@ -461,6 +474,7 @@
         this.segments = []
         this.rewards = []
         this.merchantCode.code = ''
+        this.merchantCode.remarks = ''
         this.merchantCode.verfied = false
         this.merchantCode.processed = false
       },
@@ -476,7 +490,8 @@
               .post('/campaign/reward/verify-merchant-code', {
                   locale: this.$i18n.locale,
                   campaign: this.$store.state.app.campaign.uuid,
-                  code: this.merchantCode.code
+                  code: this.merchantCode.code,
+                  remarks: this.merchantCode.remarks
               })
               .then(response => {
                 if (response.data.status === 'success') {
@@ -485,6 +500,7 @@
                   this.merchantCode.loading = false
                   this.merchantCode.verfied = true
                   this.merchantCodeVerified.code = this.merchantCode.code
+                  this.merchantCodeVerified.remarks = this.merchantCode.remarks
                   this.merchantCodeVerified.reward = this.selectedReward
                 }
               })
@@ -515,6 +531,7 @@
                   locale: this.$i18n.locale,
                   campaign: this.$store.state.app.campaign.uuid,
                   code: this.merchantCodeVerified.code,
+                  remarks: this.merchantCodeVerified.remarks,
                   reward: this.merchantCodeVerified.reward,
                   segments: this.merchantCodeVerified.segments
               })
@@ -555,21 +572,21 @@
       },
       redeemOptions() {
         return  [
-          { 
+          {
             active: (_.indexOf(this.campaign.redeemOptions, 'qr') >= 0) ? true : false,
             id: 'qr',
             icon: 'fas fa-qrcode',
             title: this.$t('qr_code'),
             description: this.$t('qr_code_info')
           },
-          { 
+          {
             active: (_.indexOf(this.campaign.redeemOptions, 'merchant') >= 0) ? true : false,
             id: 'merchant',
             icon: 'fas fa-hand-holding',
             title: this.$t('merchant_enters_code'),
             description: this.$t('merchant_enters_code_info')
           },
-          { 
+          {
             active: (_.indexOf(this.campaign.redeemOptions, 'customerNumber') >= 0) ? true : false,
             id: 'customerNumber',
             icon: 'card_giftcard',

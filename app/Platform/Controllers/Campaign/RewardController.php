@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Platform\Controllers\Campaign;
 
@@ -30,7 +30,7 @@ class RewardController extends Controller {
     /**
      * Get code used to redeem a rewards with a link (e.g. QR code).
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postGetRedeemRewardToken(Request $request) {
       $account = app()->make('account');
@@ -124,6 +124,7 @@ class RewardController extends Controller {
       $account = app()->make('account');
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $code = $request->code;
+      $remarks = $request->remarks;
       $reward = $request->reward;
       $reward = \Platform\Models\Reward::whereUuid(request('reward', 0))->firstOrFail();
       $segments = $request->segments;
@@ -163,6 +164,7 @@ class RewardController extends Controller {
       $history->reward_title = $reward->title;
       $history->points = -$reward->points_cost;
       $history->event = 'Redeemed by merchant';
+      $history->remarks = $remarks;
       $history->created_by = $campaign->created_by;
 
       $history->save();
@@ -170,7 +172,7 @@ class RewardController extends Controller {
       // Segments
       if (is_array($segments) && count($segments) > 0) {
         $history->segments()->sync($segments);
-      } 
+      }
 
       // Increment reward redemptions
       $reward->increment('number_of_times_redeemed');
