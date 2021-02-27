@@ -92,11 +92,11 @@
         <v-card-title class="headline">{{ $t('show_qr_to_merchant') }}</v-card-title>
         <v-card-text v-if="dialog.claim.qrVisible && connectionError === false && linkPointsCredited === null">
           <p class="body-1">{{ $t('keep_dialog_open_until_confirmation') }}</p>
-          <qr-code 
+          <qr-code
             class="qr-100"
             :text="dialog.claim.qrUrl"
             color="#000000"
-            bg-color="transparent" 
+            bg-color="transparent"
             error-level="Q"
           >
           </qr-code>
@@ -129,13 +129,13 @@
     <v-dialog v-model="dialog.claim.code" persistent max-width="320">
       <v-card>
         <v-card-title class="headline">{{ $t('enter_code') }}</v-card-title>
-        <v-form 
+        <v-form
           data-vv-scope="customerCode"
-          :model="customerCode" 
+          :model="customerCode"
           @submit.prevent="verifyCustomerCode"
           autocomplete="off"
           method="post"
-          accept-charset="UTF-8" 
+          accept-charset="UTF-8"
         >
           <v-card-text v-if="!customerCode.verfied">
             <p class="body-1">{{ $t('enter_code_you_received') }}</p>
@@ -151,6 +151,17 @@
               placeholder="xxx-xxx-xxx"
               v-mask="'###-###-###'"
               prepend-inner-icon="textsms"
+              class="title"
+            ></v-text-field>
+            <v-text-field
+              :disabled="customerCode.verfied"
+              v-model="customerCode.remarks"
+              outline
+              :label="$t('enter_remarks_here')"
+              data-vv-name="Enter remarks here"
+              :data-vv-as="$t('remarks')"
+              :error-messages="errors.collect('customerCode.remarks')"
+              prepend-inner-icon="feedback"
               class="title"
             ></v-text-field>
           </v-card-text>
@@ -171,14 +182,14 @@
     <v-dialog v-model="dialog.claim.merchant" persistent max-width="320">
       <v-card>
         <v-card-title class="headline">{{ $t('let_merchant_enter_code') }}</v-card-title>
-        <v-form 
+        <v-form
           v-show="!merchantCode.verfied"
           data-vv-scope="merchantCode"
-          :model="merchantCode" 
+          :model="merchantCode"
           @submit.prevent="verifyMerchantCode"
           autocomplete="off"
           method="post"
-          accept-charset="UTF-8" 
+          accept-charset="UTF-8"
         >
           <v-card-text>
             <p class="body-1">{{ $t('hand_over_device_to_merchant') }}</p>
@@ -195,6 +206,18 @@
             :label="$t('enter_code_here')"
             class="title"
             ></v-text-field>
+
+            <v-text-field
+            v-model="merchantCode.remarks"
+            data-vv-name="remarks"
+            :data-vv-as="$t('remarks')"
+            :type="'text'"
+            :error-messages="errors.collect('merchantCode.remarks')"
+            outline
+            :label="$t('enter_remarks_here')"
+            class="title"
+            ></v-text-field>
+
            </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -203,14 +226,14 @@
           </v-card-actions>
         </v-form>
 
-        <v-form 
+        <v-form
           v-if="merchantCode.verfied && !merchantCode.processed"
           data-vv-scope="merchantCodeVerified"
-          :model="merchantCodeVerified" 
+          :model="merchantCodeVerified"
           @submit.prevent="processMerchantCode"
           autocomplete="off"
           method="post"
-          accept-charset="UTF-8" 
+          accept-charset="UTF-8"
         >
           <v-card-text>
             <p class="body-1" v-html="$t('code_correct_enter_points')"></p>
@@ -229,7 +252,7 @@
                 v-if="Object.keys(segments).length > 0"
                 v-model="merchantCodeVerified.segments"
                 :items="segments"
-                item-value="0" 
+                item-value="0"
                 item-text="1"
                 :label="$t('segments') + ' ' + $t('_optional_')"
                 :data-vv-as="$t('segments')"
@@ -314,18 +337,21 @@
         customerCode: {
           loading: false,
           verfied: false,
-          code: ''
+          code: '',
+          remarks: ''
         },
         merchantCode: {
           loading: false,
           verfied: false,
           processed: false,
-          code: ''
+          code: '',
+          remarks: ''
         },
         merchantCodeVerified: {
           loading: false,
           points: '',
-          code: ''
+          code: '',
+          remarks: ''
         }
       }
     },
@@ -397,11 +423,13 @@
               .post('/campaign/earn/verify-customer-code', {
                   locale: this.$i18n.locale,
                   campaign: this.$store.state.app.campaign.uuid,
-                  code: this.unmask(this.customerCode.code, '###-###-###')
+                  code: this.unmask(this.customerCode.code, '###-###-###'),
+                  remarks: this.customerCode.remarks
               })
               .then(response => {
                 if (response.data.status === 'success') {
                   this.customerCode.code = ''
+                  this.customerCode.remarks = ''
                   this.customerCode.loading = false
                   this.customerCode.verfied = true
                 }
@@ -424,6 +452,7 @@
         this.dialog.claim.merchant = false
         this.segments = []
         this.merchantCode.code = ''
+        this.merchantCode.remarks = ''
         this.merchantCode.verfied = false
         this.merchantCode.processed = false
       },
@@ -439,7 +468,8 @@
               .post('/campaign/earn/verify-merchant-code', {
                   locale: this.$i18n.locale,
                   campaign: this.$store.state.app.campaign.uuid,
-                  code: this.merchantCode.code
+                  code: this.merchantCode.code,
+                  remarks: this.merchantCode.remarks
               })
               .then(response => {
                 if (response.data.status === 'success') {
@@ -447,6 +477,7 @@
                   this.merchantCode.loading = false
                   this.merchantCode.verfied = true
                   this.merchantCodeVerified.code = this.merchantCode.code
+                  this.merchantCodeVerified.remarks = this.merchantCode.remarks
                 }
               })
               .catch(err => {
@@ -476,6 +507,7 @@
                   locale: this.$i18n.locale,
                   campaign: this.$store.state.app.campaign.uuid,
                   code: this.merchantCodeVerified.code,
+                  remarks: this.merchantCodeVerified.remarks,
                   points: this.merchantCodeVerified.points,
                   segments: this.merchantCodeVerified.segments
               })
@@ -514,28 +546,28 @@
       },
       claimOptions() {
         return  [
-          { 
+          {
             active: (_.indexOf(this.campaign.claimOptions, 'qr') >= 0) ? true : false,
             id: 'qr',
             icon: 'fas fa-qrcode',
             title: this.$t('qr_code'),
             description: this.$t('qr_code_points_info')
           },
-          { 
+          {
             active: (_.indexOf(this.campaign.claimOptions, 'code') >= 0) ? true : false,
             id: 'code',
             icon: 'textsms',
             title: this.$t('enter_code'),
             description: this.$t('enter_code_points_info')
           },
-          { 
+          {
             active: (_.indexOf(this.campaign.claimOptions, 'merchant') >= 0) ? true : false,
             id: 'merchant',
             icon: 'fas fa-hand-holding',
             title: this.$t('merchant_enters_code'),
             description: this.$t('merchant_enters_code_points_info')
           },
-          { 
+          {
             active: (_.indexOf(this.campaign.claimOptions, 'customerNumber') >= 0) ? true : false,
             id: 'customerNumber',
             icon: 'card_giftcard',

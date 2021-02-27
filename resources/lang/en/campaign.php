@@ -13,7 +13,7 @@ return [
     /*
      |--------------------------------------------------------------------------
      | Language variables
-     | "language_abbr" is shown when a language is selected in the language 
+     | "language_abbr" is shown when a language is selected in the language
      | dropdown. "language_title" is shown in the dropdown itself.
      |--------------------------------------------------------------------------
      */
@@ -123,6 +123,7 @@ return [
     "let_merchant_enter_code" => "Let merchant enter code",
     "hand_over_device_to_merchant" => "Please hand over this device to the merchant.",
     "enter_code_here" => "Enter code here",
+    "enter_remarks_here" => "Enter remarks here",
     "code_correct_enter_points" => "Code is correct. Enter the amount of points to be credited.",
     "code_correct_select_reward" => "Code is correct. Select the reward to redeem.",
     "segments" => "Segments",
@@ -133,6 +134,7 @@ return [
     "customer_number_points_info" => "Provide your customer number so the merchant can add points.",
     "enter_code" => "Enter Code",
     "code" => "Code",
+    "remarks" => "Remarks",
     "enter_code_you_received" => "Please enter the code you received from the merchant below.",
     "enter_9_digit_code" => "Enter 9-digit code",
     "verify" => "Verify",

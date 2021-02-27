@@ -63,7 +63,7 @@
                       <div class="caption">{{ item.customer_details.name }} ({{ item.customer_details.number }})</div>
                       <div class="caption" v-if="item.reward_title !== null">{{ item.reward_title }}</div>
                       <div class="caption">{{ item.description }}</div>
-
+                      <div class="caption">Remarks : {{ item.remarks }}</div>
                       <v-chip
                         v-for="(segment, index) in item.segment_details"
                         :key="index"
