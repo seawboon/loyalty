@@ -34145,7 +34145,7 @@ Vue.use(vee_validate__WEBPACK_IMPORTED_MODULE_7__["default"]);
 Vue.component('vue-gallery', vue_gallery__WEBPACK_IMPORTED_MODULE_9___default.a);
 Vue.use(vue_google_charts__WEBPACK_IMPORTED_MODULE_10__["default"]);
 Vue.use(_ckeditor_ckeditor5_vue__WEBPACK_IMPORTED_MODULE_11___default.a);
-Vue.config.productionTip = true; // Set Vue router
+Vue.config.productionTip = false; // Set Vue router
 
 
 Vue.router = _routes_js__WEBPACK_IMPORTED_MODULE_13__["default"];

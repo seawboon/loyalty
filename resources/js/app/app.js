@@ -33,7 +33,7 @@ Vue.component('vue-gallery', VueGallery)
 Vue.use(VueGoogleCharts)
 Vue.use(CKEditor)
 
-Vue.config.productionTip = true
+Vue.config.productionTip = false
 
 // Set Vue router
 import router from './routes.js'

@@ -22663,7 +22663,7 @@ var render = function() {
                     },
                     [
                       _c("v-tab", { attrs: { href: "#history" } }, [
-                        _vm._v("\n            Recent activity ss\n          ")
+                        _vm._v("\n            Recent activity\n          ")
                       ])
                     ],
                     1
