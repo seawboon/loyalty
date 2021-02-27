@@ -4516,6 +4516,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   $_veeValidate: {
@@ -4561,7 +4572,8 @@ __webpack_require__.r(__webpack_exports__);
         credited: false,
         points: null,
         segments: [],
-        number: null
+        number: null,
+        remarks: ''
       },
       dialog: {
         claim: {
@@ -4693,6 +4705,7 @@ __webpack_require__.r(__webpack_exports__);
             campaign: _this6.$store.state.app.campaign.uuid,
             points: _this6.customerNumber.points,
             number: _this6.unmask(_this6.customerNumber.number, '###-###-###'),
+            remarks: _this6.customerNumber.remarks,
             segments: _this6.customerNumber.segments
           }).then(function (response) {
             if (response.data.status === 'success') {
@@ -24463,6 +24476,27 @@ var render = function() {
                         }
                       }),
                       _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          disabled: _vm.customerNumber.credited !== false,
+                          type: "text",
+                          outline: "",
+                          label: "Remarks",
+                          "data-vv-name": "remarks",
+                          "prepend-inner-icon": "feedback",
+                          "error-messages": _vm.errors.collect(
+                            "customerNumber.remarks"
+                          )
+                        },
+                        model: {
+                          value: _vm.customerNumber.remarks,
+                          callback: function($$v) {
+                            _vm.$set(_vm.customerNumber, "remarks", $$v)
+                          },
+                          expression: "customerNumber.remarks"
+                        }
+                      }),
+                      _vm._v(" "),
                       Object.keys(_vm.segments).length > 0
                         ? _c("v-autocomplete", {
                             attrs: {
@@ -26130,7 +26164,7 @@ var render = function() {
                           type: "text",
                           outline: "",
                           label: "Remarks",
-                          "data-vv-name": "number",
+                          "data-vv-name": "reamrks",
                           placeholder: "Enter remark",
                           "prepend-inner-icon": "feedback",
                           "error-messages": _vm.errors.collect(

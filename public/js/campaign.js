@@ -4356,6 +4356,29 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   $_veeValidate: {
@@ -4382,18 +4405,21 @@ __webpack_require__.r(__webpack_exports__);
       customerCode: {
         loading: false,
         verfied: false,
-        code: ''
+        code: '',
+        remarks: ''
       },
       merchantCode: {
         loading: false,
         verfied: false,
         processed: false,
-        code: ''
+        code: '',
+        remarks: ''
       },
       merchantCodeVerified: {
         loading: false,
         points: '',
-        code: ''
+        code: '',
+        remarks: ''
       }
     };
   },
@@ -4460,10 +4486,12 @@ __webpack_require__.r(__webpack_exports__);
           axios.post('/campaign/earn/verify-customer-code', {
             locale: _this2.$i18n.locale,
             campaign: _this2.$store.state.app.campaign.uuid,
-            code: _this2.unmask(_this2.customerCode.code, '###-###-###')
+            code: _this2.unmask(_this2.customerCode.code, '###-###-###'),
+            remarks: _this2.customerCode.remarks
           }).then(function (response) {
             if (response.data.status === 'success') {
               _this2.customerCode.code = '';
+              _this2.customerCode.remarks = '';
               _this2.customerCode.loading = false;
               _this2.customerCode.verfied = true;
             }
@@ -4486,6 +4514,7 @@ __webpack_require__.r(__webpack_exports__);
       this.dialog.claim.merchant = false;
       this.segments = [];
       this.merchantCode.code = '';
+      this.merchantCode.remarks = '';
       this.merchantCode.verfied = false;
       this.merchantCode.processed = false;
     },
@@ -4502,13 +4531,15 @@ __webpack_require__.r(__webpack_exports__);
           axios.post('/campaign/earn/verify-merchant-code', {
             locale: _this3.$i18n.locale,
             campaign: _this3.$store.state.app.campaign.uuid,
-            code: _this3.merchantCode.code
+            code: _this3.merchantCode.code,
+            remarks: _this3.merchantCode.remarks
           }).then(function (response) {
             if (response.data.status === 'success') {
               _this3.segments = _.toPairs(response.data.segments);
               _this3.merchantCode.loading = false;
               _this3.merchantCode.verfied = true;
               _this3.merchantCodeVerified.code = _this3.merchantCode.code;
+              _this3.merchantCodeVerified.remarks = _this3.merchantCode.remarks;
             }
           })["catch"](function (err) {
             var errors = err.response.data.errors || {};
@@ -4539,6 +4570,7 @@ __webpack_require__.r(__webpack_exports__);
             locale: _this4.$i18n.locale,
             campaign: _this4.$store.state.app.campaign.uuid,
             code: _this4.merchantCodeVerified.code,
+            remarks: _this4.merchantCodeVerified.remarks,
             points: _this4.merchantCodeVerified.points,
             segments: _this4.merchantCodeVerified.segments
           }).then(function (response) {
@@ -24616,6 +24648,28 @@ var render = function() {
                               },
                               expression: "customerCode.code"
                             }
+                          }),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            staticClass: "title",
+                            attrs: {
+                              disabled: _vm.customerCode.verfied,
+                              outline: "",
+                              label: _vm.$t("enter_remarks_here"),
+                              "data-vv-name": "Enter remarks here",
+                              "data-vv-as": _vm.$t("remarks"),
+                              "error-messages": _vm.errors.collect(
+                                "customerCode.remarks"
+                              ),
+                              "prepend-inner-icon": "feedback"
+                            },
+                            model: {
+                              value: _vm.customerCode.remarks,
+                              callback: function($$v) {
+                                _vm.$set(_vm.customerCode, "remarks", $$v)
+                              },
+                              expression: "customerCode.remarks"
+                            }
                           })
                         ],
                         1
@@ -24767,6 +24821,27 @@ var render = function() {
                             _vm.$set(_vm.merchantCode, "code", $$v)
                           },
                           expression: "merchantCode.code"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        staticClass: "title",
+                        attrs: {
+                          "data-vv-name": "remarks",
+                          "data-vv-as": _vm.$t("remarks"),
+                          type: "text",
+                          "error-messages": _vm.errors.collect(
+                            "merchantCode.remarks"
+                          ),
+                          outline: "",
+                          label: _vm.$t("enter_remarks_here")
+                        },
+                        model: {
+                          value: _vm.merchantCode.remarks,
+                          callback: function($$v) {
+                            _vm.$set(_vm.merchantCode, "remarks", $$v)
+                          },
+                          expression: "merchantCode.remarks"
                         }
                       })
                     ],

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Platform\Controllers\Staff;
 
@@ -30,7 +30,7 @@ class PointController extends Controller {
     /**
      * Validate if link token is (still) valid
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postValidateLinkToken(Request $request) {
       $account = app()->make('account');
@@ -58,7 +58,7 @@ class PointController extends Controller {
     /**
      * Push credited points to broadcast channel
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postPushCreditsByToken(Request $request) {
       $account = app()->make('account');
@@ -87,7 +87,7 @@ class PointController extends Controller {
         // Segments
         if (is_array($segments) && count($segments) > 0) {
           $history->segments()->sync($segments);
-        } 
+        }
 
         // Delete
         $code->delete();
@@ -156,7 +156,7 @@ class PointController extends Controller {
       // Segments
       if (is_array($segments) && count($segments) > 0) {
         $code->segments()->sync($segments);
-      } 
+      }
 
       // Format code
       $customer_code = implode('-', str_split($customer_code, 3));
@@ -272,6 +272,7 @@ class PointController extends Controller {
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $points = $request->points;
       $customerNumber = $request->number;
+      $remarks = $request->remarks;
       $segments = $request->segments;
 
       // Find customer by number
@@ -292,6 +293,7 @@ class PointController extends Controller {
       $history->staff_email = auth('staff')->user()->email;
       $history->points = $points;
       $history->event = 'Credited by staff member';
+      $history->remarks = $remarks;
       $history->created_by = $campaign->created_by;
 
       $history->save();
@@ -299,7 +301,7 @@ class PointController extends Controller {
       // Segments
       if (is_array($segments) && count($segments) > 0) {
         $history->segments()->sync($segments);
-      } 
+      }
 
       return response()->json([
         'status' => 'success'

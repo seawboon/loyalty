@@ -187,7 +187,7 @@
                 v-model="customerNumber.remarks"
                 outline
                 label="Remarks"
-                data-vv-name="number"
+                data-vv-name="reamrks"
                 placeholder="Enter remark"
                 prepend-inner-icon="feedback"
                 :error-messages="errors.collect('customerNumber.remarks')"

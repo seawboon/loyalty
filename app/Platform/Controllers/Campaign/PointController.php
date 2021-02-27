@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Platform\Controllers\Campaign;
 
@@ -30,7 +30,7 @@ class PointController extends Controller {
     /**
      * Get customer points.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getCustomerPoints(Request $request) {
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('uuid', 0))->firstOrFail();
@@ -42,7 +42,7 @@ class PointController extends Controller {
     /**
      * Get code used to claim points with a link (e.g. QR code).
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postGetClaimToken(Request $request) {
       $account = app()->make('account');
@@ -99,6 +99,7 @@ class PointController extends Controller {
       $account = app()->make('account');
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $code = $request->code;
+      $remarks = $request->remarks;
 
       // Set language locale
       $locale = request('locale', config('system.default_language'));
@@ -124,6 +125,7 @@ class PointController extends Controller {
       $history->staff_email = $code->staff_email;
       $history->points = $code->points;
       $history->event = 'Code entered by customer';
+      $history->remarks = $remarks;
       $history->created_by = $campaign->created_by;
 
       $history->save();
@@ -150,7 +152,6 @@ class PointController extends Controller {
       $account = app()->make('account');
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $code = $request->code;
-
       // Set language locale
       $locale = request('locale', config('system.default_language'));
       app()->setLocale($locale);
@@ -183,6 +184,7 @@ class PointController extends Controller {
       $account = app()->make('account');
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $code = $request->code;
+      $remarks = $request->remarks;
       $points = $request->points;
       $segments = $request->segments;
 
@@ -210,6 +212,7 @@ class PointController extends Controller {
       $history->staff_email = $code->staff_email;
       $history->points = $points;
       $history->event = 'Code entered by staff member';
+      $history->remarks = $remarks;
       $history->created_by = $campaign->created_by;
 
       $history->save();
