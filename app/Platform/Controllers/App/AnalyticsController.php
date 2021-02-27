@@ -25,7 +25,7 @@ class AnalyticsController extends \App\Http\Controllers\Controller
     /**
      * Get earning analytics.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getUserEarningAnalytics(Request $request) {
         // Period
@@ -99,7 +99,7 @@ class AnalyticsController extends \App\Http\Controllers\Controller
             $record->staff_name = ($record->staff_id === null) ? $record->staff_name : $staff[$record->staff_id];
             if ($record->staff_name === null) $record->staff_name = '-';
 
-            return collect($record)->only('uuid', 'staff_name', 'customer_name', 'campaign_name', 'description', 'icon', 'created_at', 'points');
+            return collect($record)->only('uuid', 'staff_name', 'customer_name', 'campaign_name', 'description', 'remarks', 'icon', 'created_at', 'points');
         });
 
         // Table headers
@@ -107,6 +107,7 @@ class AnalyticsController extends \App\Http\Controllers\Controller
             ['text' => __('Campaign'), 'value' => 'campaign_name'],
             ['text' => __('Customer'), 'value' => 'customer_name'],
             ['text' => __('Event'), 'value' => 'description'],
+            ['text' => __('Remarks'), 'value' => 'remarks'],
             ['text' => __('Staff member'), 'value' => 'staff_name'],
             ['text' => __('Points'), 'value' => 'points', 'align' => 'right'],
             ['text' => __('Date'), 'value' => 'created_at', 'align' => 'right']
@@ -202,7 +203,7 @@ class AnalyticsController extends \App\Http\Controllers\Controller
     /**
      * Get spending analytics.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getUserSpendingAnalytics(Request $request) {
         // Period
@@ -277,7 +278,7 @@ class AnalyticsController extends \App\Http\Controllers\Controller
             $record->staff_name = ($record->staff_id === null) ? $record->staff_name : $staff[$record->staff_id];
             if ($record->staff_name === null) $record->staff_name = '-';
 
-            return collect($record)->only('uuid', 'staff_name', 'customer_name', 'campaign_name', 'reward_title', 'description', 'icon', 'created_at', 'points');
+            return collect($record)->only('uuid', 'staff_name', 'customer_name', 'campaign_name', 'reward_title', 'description', 'remarks', 'icon', 'created_at', 'points');
         });
 
         // Table headers
@@ -287,6 +288,7 @@ class AnalyticsController extends \App\Http\Controllers\Controller
             ['text' => __('Reward'), 'value' => 'reward_title'],
             ['text' => __('Cost'), 'value' => 'points', 'align' => 'right'],
             ['text' => __('Event'), 'value' => 'description'],
+            ['text' => __('Remarks'), 'value' => 'remarks'],
             ['text' => __('Staff member'), 'value' => 'staff_name'],
             ['text' => __('Date'), 'value' => 'created_at', 'align' => 'right']
         ];
