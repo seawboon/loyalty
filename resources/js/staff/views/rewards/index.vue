@@ -77,13 +77,13 @@
 
     <v-dialog v-model="dialog.claim.merchant" persistent max-width="380">
       <v-card>
-        <v-form 
+        <v-form
           data-vv-scope="customerCode"
-          :model="merchant" 
+          :model="merchant"
           @submit.prevent="generateMerchantCode"
           autocomplete="off"
           method="post"
-          accept-charset="UTF-8" 
+          accept-charset="UTF-8"
         >
           <v-card-title class="headline">Generate code to enter on customer's device</v-card-title>
           <v-card-text>
@@ -115,7 +115,7 @@
               ></v-text-field>
 
               <div v-if="!merchant.generateNew">
-                <a href="javascript:void(0);" @click="merchant.generateNew = true">Generate a new code</a> 
+                <a href="javascript:void(0);" @click="merchant.generateNew = true">Generate a new code</a>
                 <br>
                 This will revoke the current code once it's generated.
               </div>
@@ -136,13 +136,13 @@
     <v-dialog v-model="dialog.claim.customerNumber" persistent max-width="380">
       <v-card>
         <v-card-title class="headline">Redeem reward with customer number</v-card-title>
-          <v-form 
+          <v-form
             data-vv-scope="customerNumber"
-            :model="customerNumber" 
+            :model="customerNumber"
             @submit.prevent="creditCustomer"
             autocomplete="off"
             method="post"
-            accept-charset="UTF-8" 
+            accept-charset="UTF-8"
           >
             <v-card-text>
               <p class="body-1" v-if="customerNumber.redeemed === false">Select a reward and enter a customer number to redeem a reward for the customer.</p>
@@ -156,7 +156,7 @@
                 :disabled="customerNumber.redeemed !== false"
                 v-model="customerNumber.reward"
                 :items="rewards"
-                item-value="0" 
+                item-value="0"
                 item-text="1"
                 label="Reward"
                 data-vv-name="reward"
@@ -181,12 +181,24 @@
                 :error-messages="errors.collect('customerNumber.number')"
               ></v-text-field>
 
+              <v-text-field
+                :disabled="customerNumber.redeemed !== false"
+                type="text"
+                v-model="customerNumber.remarks"
+                outline
+                label="Remarks"
+                data-vv-name="number"
+                placeholder="Enter remark"
+                prepend-inner-icon="feedback"
+                :error-messages="errors.collect('customerNumber.remarks')"
+              ></v-text-field>
+
               <v-autocomplete
                 :disabled="customerNumber.redeemed !== false"
                 v-if="Object.keys(segments).length > 0"
                 v-model="customerNumber.segments"
                 :items="segments"
-                item-value="0" 
+                item-value="0"
                 item-text="1"
                 label="Segments (optional)"
                 hide-no-data
@@ -244,7 +256,8 @@
           redeemed: false,
           reward: null,
           segments: [],
-          number: null
+          number: null,
+          remarks: ''
         },
         dialog: {
           claim: {
@@ -334,6 +347,7 @@
                   campaign: this.$store.state.app.campaign.uuid,
                   reward: this.customerNumber.reward,
                   number: this.unmask(this.customerNumber.number, '###-###-###'),
+                  remarks: this.customerNumber.remarks,
                   segments: this.customerNumber.segments
               })
               .then(response => {
@@ -371,21 +385,21 @@
       },
       redeemOptions() {
         return  [
-          { 
+          {
             active: (_.indexOf(this.campaign.redeemOptions, 'qr') >= 0) ? true : false,
             id: 'qr',
             icon: 'fas fa-qrcode',
             title: 'QR Code',
             description: 'The customer displays a QR that can be scanned by a staff member.'
           },
-          { 
+          {
             active: (_.indexOf(this.campaign.redeemOptions, 'merchant') >= 0) ? true : false,
             id: 'merchant',
             icon: 'fas fa-hand-holding',
             title: 'Merchant Enters Code',
             description: 'Generate a code that a staff member can enter on the customer\'s phone.'
           },
-          { 
+          {
             active: (_.indexOf(this.campaign.redeemOptions, 'customerNumber') >= 0) ? true : false,
             id: 'customerNumber',
             icon: 'card_giftcard',

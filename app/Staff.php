@@ -81,11 +81,11 @@ class Staff extends Authenticatable implements JWTSubject, HasMedia
     public function getJWTIdentifier() {
       return $this->getKey();
     }
-    
+
     public function getJWTCustomClaims() {
       return [];
     }
-    
+
     public static function boot() {
       parent::boot();
 
@@ -354,7 +354,7 @@ class Staff extends Authenticatable implements JWTSubject, HasMedia
         $record->segment_details = $segments;
         $record->customer_details = collect($record->customer)->only('avatar', 'name', 'number', 'points');
 
-        return collect($record)->only('color', 'created_at', 'description', 'icon', 'points', 'reward_title', 'segment_details', 'customer_details');
+        return collect($record)->only('color', 'created_at', 'description', 'remarks', 'icon', 'points', 'reward_title', 'segment_details', 'customer_details');
       });
 
       return $history;

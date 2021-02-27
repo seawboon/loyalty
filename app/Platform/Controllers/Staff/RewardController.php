@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Platform\Controllers\Staff;
 
@@ -42,7 +42,7 @@ class RewardController extends Controller {
     /**
      * Validate if link token is (still) valid
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postValidateLinkToken(Request $request) {
       $account = app()->make('account');
@@ -73,7 +73,7 @@ class RewardController extends Controller {
     /**
      * Push redeemed reward to broadcast channel
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postRedeemRewardByToken(Request $request) {
       $account = app()->make('account');
@@ -115,7 +115,7 @@ class RewardController extends Controller {
         // Segments
         if (is_array($segments) && count($segments) > 0) {
           $history->segments()->sync($segments);
-        } 
+        }
 
         // Delete
         $code->delete();
@@ -232,6 +232,7 @@ class RewardController extends Controller {
       $account = app()->make('account');
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $customerNumber = $request->number;
+      $remarks = $request->remarks;
       $segments = $request->segments;
 
       // Find customer by number
@@ -265,6 +266,7 @@ class RewardController extends Controller {
       $history->reward_title = $reward->title;
       $history->points = -$reward->points_cost;
       $history->event = 'Redeemed with customer number';
+      $history->remarks = $remarks;
       $history->created_by = $campaign->created_by;
 
       $history->save();

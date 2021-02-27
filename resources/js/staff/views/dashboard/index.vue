@@ -11,7 +11,7 @@
             color="grey darken-3"
             >
             <v-tab :href="'#history'">
-              Recent activity
+              Recent activity ss
             </v-tab>
           </v-tabs>
 
@@ -35,7 +35,7 @@
                   dense
                 >
                   <v-timeline-item
-                    v-for="(item, index) in history" 
+                    v-for="(item, index) in history"
                     :key="index"
                     :color="item.color"
                     :icon="item.icon"
@@ -63,9 +63,9 @@
                       <div class="caption">{{ item.customer_details.name }} ({{ item.customer_details.number }})</div>
                       <div class="caption" v-if="item.reward_title !== null">{{ item.reward_title }}</div>
                       <div class="caption">{{ item.description }}</div>
-
-                      <v-chip 
-                        v-for="(segment, index) in item.segment_details" 
+                      <div class="caption">Remarks : {{ item.remarks }}</div>
+                      <v-chip
+                        v-for="(segment, index) in item.segment_details"
                         :key="index"
                         small
                         class="mr-2 mt-2"
@@ -103,7 +103,7 @@
       },
       getDateFrom(date) {
         return moment(date).from()
-      } 
+      }
     },
     mounted () {
       this.locale = this.$auth.user().locale
