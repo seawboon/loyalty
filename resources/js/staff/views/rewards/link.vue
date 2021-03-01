@@ -43,13 +43,13 @@
               </v-list-item>
             </v-list>
 
-            <v-form 
+            <v-form
               data-vv-scope="redeemReward"
-              :model="redeemReward" 
+              :model="redeemReward"
               @submit.prevent="creditCustomer"
               autocomplete="off"
               method="post"
-              accept-charset="UTF-8" 
+              accept-charset="UTF-8"
             >
               <v-card-text>
                 <p class="body-1">You can redeem the reward below.</p>
@@ -58,7 +58,7 @@
                     :disabled="redeemReward.code !== false"
                     v-model="redeemReward.reward"
                     :items="rewards"
-                    item-value="0" 
+                    item-value="0"
                     item-text="1"
                     label="Reward"
                     hide-no-data
@@ -67,12 +67,24 @@
                     :error-messages="errors.collect('redeemReward.reward')"
                   ></v-autocomplete>
 
+                  <v-text-field
+                    :disabled="redeemReward.code !== false"
+                    type="text"
+                    v-model="redeemReward.remarks"
+                    outline
+                    label="Remarks"
+                    data-vv-name="reamrks"
+                    placeholder="Enter remark"
+                    prepend-inner-icon="feedback"
+                    :error-messages="errors.collect('redeemReward.remarks')"
+                  ></v-text-field>
+
                   <v-autocomplete
                     :disabled="redeemReward.code !== false"
                     v-if="Object.keys(segments).length > 0"
                     v-model="redeemReward.segments"
                     :items="segments"
-                    item-value="0" 
+                    item-value="0"
                     item-text="1"
                     label="Segments (optional)"
                     hide-no-data
@@ -152,6 +164,7 @@
           reward: null,
           segments: [],
           code: false,
+          remarks: '',
         },
       }
     },
@@ -170,6 +183,7 @@
                   campaign: this.$store.state.app.campaign.uuid,
                   token: this.token,
                   reward: this.redeemReward.reward,
+                  remarks: this.redeemReward.remarks,
                   segments: this.redeemReward.segments
               })
               .then(response => {

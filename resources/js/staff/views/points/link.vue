@@ -44,13 +44,13 @@
               </v-list-item>
             </v-list>
 
-            <v-form 
+            <v-form
               data-vv-scope="creditPoints"
-              :model="creditPoints" 
+              :model="creditPoints"
               @submit.prevent="creditCustomer"
               autocomplete="off"
               method="post"
-              accept-charset="UTF-8" 
+              accept-charset="UTF-8"
             >
               <v-card-text>
                 <p class="body-1">You can credit the customer's points below.</p>
@@ -67,12 +67,24 @@
                     :error-messages="errors.collect('creditPoints.points')"
                   ></v-text-field>
 
+                  <v-text-field
+                    :disabled="creditPoints.code !== false"
+                    type="text"
+                    v-model="creditPoints.remarks"
+                    outline
+                    label="Remarks"
+                    data-vv-name="reamrks"
+                    placeholder="Enter remark"
+                    prepend-inner-icon="feedback"
+                    :error-messages="errors.collect('creditPoints.remarks')"
+                  ></v-text-field>
+
                   <v-autocomplete
                     :disabled="creditPoints.code !== false"
                     v-if="Object.keys(segments).length > 0"
                     v-model="creditPoints.segments"
                     :items="segments"
-                    item-value="0" 
+                    item-value="0"
                     item-text="1"
                     label="Segments (optional)"
                     hide-no-data
@@ -151,6 +163,7 @@
           points: null,
           segments: [],
           code: false,
+          remarks: ''
         },
       }
     },
@@ -169,6 +182,7 @@
                   campaign: this.$store.state.app.campaign.uuid,
                   token: this.token,
                   points: this.creditPoints.points,
+                  remarks: this.creditPoints.remarks,
                   segments: this.creditPoints.segments
               })
               .then(response => {

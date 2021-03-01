@@ -65,6 +65,7 @@ class PointController extends Controller {
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $token = $request->token;
       $points = $request->points;
+      $remarks = $request->remarks;
       $segments = $request->segments;
 
       // Validate token
@@ -80,6 +81,7 @@ class PointController extends Controller {
         $history->staff_email = auth('staff')->user()->email;
         $history->points = $points;
         $history->event = 'Credited with QR code';
+        $history->remarks = $remarks;
         $history->created_by = $campaign->created_by;
 
         $history->save();

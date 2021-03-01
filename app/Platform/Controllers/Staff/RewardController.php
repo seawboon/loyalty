@@ -80,6 +80,7 @@ class RewardController extends Controller {
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('campaign', 0))->firstOrFail();
       $token = $request->token;
       $reward = $request->reward;
+      $remarks = $request->remarks;
       $reward = \Platform\Models\Reward::whereUuid(request('reward', 0))->firstOrFail();
       $segments = $request->segments;
 
@@ -108,6 +109,7 @@ class RewardController extends Controller {
         $history->reward_title = $reward->title;
         $history->points = -$reward->points_cost;
         $history->event = 'Redeemed with QR code';
+        $history->remarks = $remarks;
         $history->created_by = $campaign->created_by;
 
         $history->save();
