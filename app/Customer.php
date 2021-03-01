@@ -77,15 +77,15 @@ class Customer extends Authenticatable implements JWTSubject, HasMedia
           ->height(512)
           ->performOnCollections('avatar');
     }
-    
+
     public function getJWTIdentifier() {
       return $this->getKey();
     }
-    
+
     public function getJWTCustomClaims() {
       return [];
     }
-    
+
     public static function boot() {
       parent::boot();
 
@@ -115,7 +115,7 @@ class Customer extends Authenticatable implements JWTSubject, HasMedia
 
     /**
      * Form for creating a new record, per role
-     * Note: if a column is required, make sure to add 'required' => true 
+     * Note: if a column is required, make sure to add 'required' => true
      *
      * @return array
      */
@@ -417,7 +417,7 @@ class Customer extends Authenticatable implements JWTSubject, HasMedia
         $record->created_at = $record->created_at->timezone($this->getTimezone());
         $record->description = __($record->description);
 
-        return collect($record)->only('color', 'created_at', 'description', 'icon', 'icon_size', 'points', 'reward_title');
+        return collect($record)->only('color', 'created_at', 'description', 'remarks', 'icon', 'icon_size', 'points', 'reward_title');
       });
 
       return $history;

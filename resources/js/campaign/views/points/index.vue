@@ -34,7 +34,7 @@
                   dense
                 >
                   <v-timeline-item
-                    v-for="(item, index) in history" 
+                    v-for="(item, index) in history"
                     :key="index"
                     :color="item.color"
                     :icon="item.icon"
@@ -53,6 +53,7 @@
                         </v-tooltip>
                         <div class="caption" v-if="item.reward_title !== null">{{ item.reward_title }}</div>
                         <div class="caption">{{ item.description }}</div>
+                        <div class="caption">Remarks: {{ item.remarks }}</div>
                       </v-flex>
                     </v-layout>
                   </v-timeline-item>
