@@ -8,17 +8,25 @@
 Route::get('install', '\Platform\Controllers\InstallationController@getInstall')->name('installation');
 Route::post('install', '\Platform\Controllers\InstallationController@postInstall');
 
+Route::get('customer/import-export', 'DataTableController@importExport');
+Route::post('customer/import', 'DataTableController@import');
+Route::get('customer/export', 'DataTableController@export');
+
 /*
 |--------------------------------------------------------------------------
 | App routes
 |--------------------------------------------------------------------------
 */
 
+
+
+
 $account = app()->make('account');
 
 if (! $account->found) {
 	// The host can not be resolved to a website
 	Route::get('/{any?}', '\Platform\Controllers\App\AppController@getAccountNotFound')->where('any', '.*');
+
 } else {
 	// App routes (for owners, admins and users)
 	Route::get('go/', '\Platform\Controllers\App\AppController@index');

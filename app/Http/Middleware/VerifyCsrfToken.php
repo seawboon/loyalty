@@ -21,6 +21,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'install',
         'install/*',
-        'update/*'
+        'update/*',
+        'customer/*'
     ];
 }

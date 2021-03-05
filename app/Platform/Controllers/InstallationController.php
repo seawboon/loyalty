@@ -79,7 +79,7 @@ class InstallationController extends \App\Http\Controllers\Controller {
           $cfg_found = true;
           if ($value == 'true' || $value == 'false' || is_numeric($value)) {
             $new_env .= $key . '=' . $value . '' . PHP_EOL;
-          } else { 
+          } else {
             $new_env .= $key . '="' . $value . '"' . PHP_EOL;
           }
         }
