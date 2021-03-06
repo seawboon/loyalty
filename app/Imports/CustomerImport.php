@@ -25,7 +25,6 @@ class CustomerImport implements ToCollection, WithChunkReading, ShouldQueue
         $account = app()->make('account');
         $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereId(3)->firstOrFail();
 
-        try {
         foreach ($rows as $row)
         {
             $verification_code = Str::random(32);
@@ -80,10 +79,6 @@ class CustomerImport implements ToCollection, WithChunkReading, ShouldQueue
             }
 
         }
-      }
-
-    }catch(\Exception $e) {
-        return $e->getMessage();
       }
     }
 
