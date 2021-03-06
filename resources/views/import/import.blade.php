@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
- <form action="{{ url('customer/import') }}" method="post" name="importform" enctype="multipart/form-data">
+ <form action="{{ url('customer/import/today') }}" method="post" name="importform" enctype="multipart/form-data">
  @csrf
  <div class="form-group">
  <label for="file">File:</label>
