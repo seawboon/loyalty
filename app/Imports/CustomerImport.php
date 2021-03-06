@@ -67,7 +67,7 @@ class CustomerImport implements ToCollection, WithChunkReading, ShouldQueue
 
             $this->ensureNumberIsUnique($user);
 
-            /*if ($campaign->signup_bonus_points > 0) {*/
+            if ($row[6] > 0) {
               $history = new History;
 
               $history->customer_id = $user->id;
@@ -76,7 +76,7 @@ class CustomerImport implements ToCollection, WithChunkReading, ShouldQueue
               $history->event = 'Points - Carry Forward';
               $history->points = $row[6];
               $history->save();
-            /*}*/
+            }
 
         }
       }
