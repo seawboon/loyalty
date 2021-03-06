@@ -14,7 +14,7 @@ class AddColsToCustomersTable extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->string('dob', 32)->after('social')->nullable();
+            $table->string('dob', 32)->after('date_of_birth')->nullable();
         });
     }
 
