@@ -34,6 +34,17 @@ class CustomerImport implements ToCollection, WithChunkReading, ShouldQueue
             $language = config('system.default_language');
             $timezone = config('system.default_timezone');
 
+            $gender = 1;
+            if($row[4] == 'female') {
+              $gender = 0;
+            }
+
+            $email = $row[3];
+            if(empty($row[3]) or $row[3] === '' or $row[3] === ' ' or $row[3] === 0) {
+              $email = $customer_number.'@unique-seafood.com.my';
+            }
+
+            if (!$row->filter()->isEmpty()) {
             $user = new Customer;
             $user->account_id = $account->id;
             $user->campaign_id = $campaign->id;
@@ -41,30 +52,34 @@ class CustomerImport implements ToCollection, WithChunkReading, ShouldQueue
             $user->role = 1;
             $user->active = 1;
             $user->customer_number = $customer_number;
-            $user->name = $row[3];
-            $user->email = $row[6];
+            $user->name = $row[1];
+            $user->email = $email;
             $user->password = bcrypt('Hello123');
             $user->language = 'en-gb';
             $user->locale = 'en-GB';
             $user->timezone = 'Asia/Kuala_Lumpur';
             $user->signup_ip_address = '192.168.10.1';
             $user->verification_code = $verification_code;
+            $user->gender = $gender;
+            $user->phone = $row[2];
+            $user->dob = $row[5];
             $user->save();
 
             $this->ensureNumberIsUnique($user);
 
-            if ($campaign->signup_bonus_points > 0) {
+            /*if ($campaign->signup_bonus_points > 0) {*/
               $history = new History;
 
               $history->customer_id = $user->id;
               $history->campaign_id = $campaign->id;
               $history->created_by = $campaign->created_by;
-              $history->event = 'Sign up bonus';
-              $history->points = $campaign->signup_bonus_points;
+              $history->event = 'Points - Carry Forward';
+              $history->points = $row[6];
               $history->save();
-            }
+            /*}*/
 
         }
+      }
     }
 
     public function ensureNumberIsUnique(Customer $customer) {

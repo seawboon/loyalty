@@ -32,7 +32,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Handle user registration.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function register(Request $request) {
       $account = app()->make('account');
@@ -86,7 +86,7 @@ class AuthController extends \App\Http\Controllers\Controller
 
       $language = ($request->language !== null) ? $request->language : config('system.default_language');
       $timezone = ($request->timezone !== null) ? $request->timezone : config('system.default_timezone');
- 
+
       $verification_code = Str::random(32);
 
       $customer_number = Core\Secure::getRandom(9, '1234567890');
@@ -108,7 +108,7 @@ class AuthController extends \App\Http\Controllers\Controller
       $user->verification_code = $verification_code;
       $user->save();
 
-      $this->ensureNumberIsUnique($user);
+      //$this->ensureNumberIsUnique($user);
 
       // Add points for signing up
       if ($campaign->signup_bonus_points > 0) {
@@ -141,11 +141,11 @@ class AuthController extends \App\Http\Controllers\Controller
           $this->ensureNumberIsUnique($customer);
         }
     }
-  
+
     /**
      * Handle user login.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function login(Request $request) {
       $v = Validator::make($request->all(), [
@@ -193,7 +193,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Handle user logout.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function logout() {
       $this->guard()->logout();
@@ -206,7 +206,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Refresh authorization token.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function refresh() {
       try {
@@ -224,7 +224,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Send a password reset email.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function passwordReset(Request $request) {
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('uuid', 0))->firstOrFail();
@@ -293,7 +293,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Validate reset password token.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function passwordResetValidateToken(Request $request) {
       $v = Validator::make($request->all(), [
@@ -331,7 +331,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Update password.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function passwordUpdate(Request $request) {
       $v = Validator::make($request->all(), [
@@ -383,7 +383,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Update profile.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function postUpdateProfile(Request $request) {
       $account = app()->make('account');
@@ -448,11 +448,11 @@ class AuthController extends \App\Http\Controllers\Controller
         'user' => auth('customer')->user()
       ]);
     }
-  
+
     /**
      * Get user info.
      *
-     * @return \Symfony\Component\HttpFoundation\Response 
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function user(Request $request) {
       $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('uuid', 0))->firstOrFail();
@@ -489,7 +489,7 @@ class AuthController extends \App\Http\Controllers\Controller
     /**
      * Get guard for logged in user.
      *
-     * @return \Illuminate\Support\Facades\Auth 
+     * @return \Illuminate\Support\Facades\Auth
      */
     private function guard() {
       return Auth::guard('customer');
