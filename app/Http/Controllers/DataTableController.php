@@ -31,11 +31,13 @@ class DataTableController extends Controller
         'import_file' => 'required'
       ]);
 
+      return $request;
+
         //Excel::import(new ImportCustomers, request()->file('import_file'));
         /*import with collection */
 
-        Excel::queueImport(new CustomerImport, request()->file('import_file'));
+        //Excel::queueImport(new CustomerImport, request()->file('import_file'));
 
-        return back();
+        //return back();
     }
 }
