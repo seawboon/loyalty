@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Platform\Controllers\Campaign;
 

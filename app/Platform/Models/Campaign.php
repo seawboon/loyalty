@@ -517,7 +517,7 @@ class Campaign extends Model implements HasMedia
         ['visible' => true, 'value' => 'business_text', 'exclude_from_select' => true, 'relation' => ['type' => 'hasOne', 'with' => 'business', 'table' => 'businesses', 'val' => 'name'], 'text' => __('Business'), 'align' => 'left', 'sortable' => false],
         ['visible' => true, 'value' => 'name', 'text' => __('Campaign'), 'align' => 'left', 'sortable' => true],
         ['visible' => true, 'value' => 'signup_bonus_points', 'type' => 'number', 'text' => __('Sign up bonus'), 'align' => 'right', 'sortable' => true],
-        ['visible' => true, 'value' => 'customer_count', 'exclude_from_select' => true, 'type' => 'number', 'text' => __('Customers'), 'align' => 'right', 'sortable' => false],
+        //['visible' => true, 'value' => 'customer_count', 'exclude_from_select' => true, 'type' => 'number', 'text' => __('Customers'), 'align' => 'right', 'sortable' => false],
         ['visible' => true, 'value' => 'url', 'exclude_from_select' => true, 'type' => 'campaign_link', 'text' => __('Visit campaign'), 'align' => 'left', 'sortable' => false]
       ];
       $reseller = $owner;
@@ -803,7 +803,7 @@ class Campaign extends Model implements HasMedia
      */
     public function getCampaignWebsite() {
       $root = $this->host;
-      if ($root === null) $root = $this->account->app_host . '/campaign/' . $this->slug; 
+      if ($root === null) $root = $this->account->app_host . '/campaign/' . $this->slug;
 
       $headerOpacity = $this->settings['theme_headerOpacity'] ?? 85;
 
