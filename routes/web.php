@@ -8,9 +8,11 @@
 Route::get('install', '\Platform\Controllers\InstallationController@getInstall')->name('installation');
 Route::post('install', '\Platform\Controllers\InstallationController@postInstall');
 
+/* IMport customer
 Route::get('customer/import-export', 'DataTableController@importExport');
 Route::post('customer/import/today', 'DataTableController@import');
 Route::get('customer/export', 'DataTableController@export');
+*/
 
 /*
 |--------------------------------------------------------------------------
