@@ -23,7 +23,8 @@ class CustomerImport implements ToCollection, WithChunkReading, ShouldQueue
     public function collection(Collection $rows)
     {
         $account = app()->make('account');
-        $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereId(3)->firstOrFail();
+        $client_campaign = env('CLIENT_CAMPAIGN_ID');
+        $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereId($client_campaign)->firstOrFail();
 
         foreach ($rows as $row)
         {
