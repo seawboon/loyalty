@@ -28,7 +28,7 @@ class Customer extends Authenticatable implements JWTSubject, HasMedia
      * @var array
      */
     protected $fillable = [
-      'name', 'email', 'password',
+      'name', 'email', 'password', 'dob', 'phone', 'gender',
     ];
 
     /**

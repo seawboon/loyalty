@@ -419,6 +419,9 @@ class AuthController extends \App\Http\Controllers\Controller
       // All good, update profile
       auth('customer')->user()->name = $request->name;
       auth('customer')->user()->email = $request->email;
+      auth('customer')->user()->dob = $request->dob;
+      auth('customer')->user()->phone = $request->phone;
+      auth('customer')->user()->gender = $request->gender;
       auth('customer')->user()->locale = $request->locale;
       auth('customer')->user()->timezone = $request->timezone;
 
@@ -471,6 +474,9 @@ class AuthController extends \App\Http\Controllers\Controller
         'avatar' => $user->avatar,
         'name' => $user->name,
         'email' => $user->email,
+        'dob' => $user->dob,
+        'phone' => $user->phone,
+        'gender' => $user->gender,
         'number' => $user->number,
         'points' => (int) $user->points,
         'role' => (int) $user->role,

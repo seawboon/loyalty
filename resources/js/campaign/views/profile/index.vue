@@ -2,7 +2,7 @@
   <v-container fluid fill-height class="px-0 pt-0 pb-5">
     <v-layout align-center justify-center row fill-height wrap>
       <v-flex xs10 sm8 md6 lg4 xl3 class="mt-5">
-        <v-form 
+        <v-form
           data-vv-scope="form1"
           :model="form1"
           id="form1"
@@ -10,7 +10,7 @@
           @submit.prevent="submitForm('form1')"
           autocomplete="off"
           method="post"
-          accept-charset="UTF-8" 
+          accept-charset="UTF-8"
           enctype="multipart/form-data"
         >
           <v-card class="elevation-18 my-4">
@@ -90,12 +90,40 @@
                         :error-messages="errors.collect('form1.email')"
                         required
                       ></v-text-field>
+                      <v-text-field
+                        v-model="form1.dob"
+                        data-vv-name="dob"
+                        :label="'Date of Birth'"
+                        :data-vv-as="'Date of Birth'"
+                        :placeholder="'Enter Date of Birth'"
+                        :error-messages="errors.collect('form1.dob')"
+                        required
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="form1.phone"
+                        data-vv-name="phone"
+                        :label="'Phone'"
+                        :data-vv-as="'Phone'"
+                        :placeholder="'Enter Phone'"
+                        :error-messages="errors.collect('form1.phone')"
+                        required
+                      ></v-text-field>
+                      <v-autocomplete
+                        v-model="form1.gender"
+                        :items="genders"
+                        item-value="0"
+                        item-text="1"
+                        :label="'Gender'"
+                        :data-vv-as="'Gender'"
+                        data-vv-name="gender"
+                        :error-messages="errors.collect('form1.gender')"
+                      ></v-autocomplete>
                     </v-tab-item>
                     <v-tab-item :value="'localization'">
                       <v-autocomplete
                         v-model="form1.locale"
                         :items="locales"
-                        item-value="0" 
+                        item-value="0"
                         item-text="1"
                         :label="$t('locale')"
                         :data-vv-as="$t('locale')"
@@ -107,7 +135,7 @@
                       <v-autocomplete
                         v-model="form1.timezone"
                         :items="timezones"
-                        item-value="0" 
+                        item-value="0"
                         item-text="1"
                         :label="$t('select_timezone')"
                         :data-vv-as="$t('timezone')"
@@ -175,11 +203,15 @@
         show_new_password: false,
         timezones: [],
         locales: [],
+        genders:[{0:1, 1:"Male"},{0:0, 1:"Female"}],
         form1: {
           uuid: this.$store.state.app.campaign.uuid,
           loading: false,
           name: this.$auth.user().name,
           email: this.$auth.user().email,
+          dob: this.$auth.user().dob,
+          gender: this.$auth.user().gender,
+          phone: this.$auth.user().phone,
           avatar_media_url: this.$auth.user().avatar,
           avatar_media_changed: false,
           locale: this.$auth.user().locale,
@@ -268,7 +300,7 @@
               }
             }
           })
-          .finally(() => { 
+          .finally(() => {
             app.loading = false
           })
       },
