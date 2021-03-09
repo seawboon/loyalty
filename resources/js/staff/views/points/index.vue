@@ -286,6 +286,19 @@
               <v-text-field
                 :disabled="customerNumber.credited !== false"
                 type="number"
+                v-model="customerNumber.spend"
+                @change="updatePoints"
+                outline
+                label="Spend Amount"
+                prepend-inner-icon="toll"
+                data-vv-name="spend"
+                v-validate="'numeric|max_value:100000'"
+                :error-messages="errors.collect('customerNumber.spend')"
+              ></v-text-field>
+
+              <v-text-field
+                :disabled="customerNumber.credited !== false"
+                type="number"
                 v-model="customerNumber.points"
                 outline
                 label="Points to be credited"
@@ -392,7 +405,8 @@
           points: null,
           segments: [],
           number: null,
-          remarks: ''
+          remarks: '',
+          spend: null
         },
         dialog: {
           claim: {
@@ -515,6 +529,7 @@
                   points: this.customerNumber.points,
                   number: this.unmask(this.customerNumber.number, '###-###-###'),
                   remarks: this.customerNumber.remarks,
+                  spend: this.customerNumber.spend,
                   segments: this.customerNumber.segments
               })
               .then(response => {
@@ -544,6 +559,10 @@
           } else {
             return
           }
+      },
+      updatePoints() {
+        //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
+        this.customerNumber.points = parseFloat(((2 / 100) * this.customerNumber.spend).toFixed(0))
       }
     },
     computed: {

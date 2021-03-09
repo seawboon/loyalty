@@ -239,6 +239,18 @@
             <p class="body-1" v-html="$t('code_correct_enter_points')"></p>
               <v-text-field
                 type="number"
+                v-model="merchantCodeVerified.spend"
+                @change="updatePoints"
+                outline
+                label="Spend Amount"
+                prepend-inner-icon="toll"
+                data-vv-name="spend"
+                :data-vv-as="'Spend'"
+                v-validate="'numeric|max_value:100000'"
+                :error-messages="errors.collect('merchantCodeVerified.spend')"
+              ></v-text-field>
+              <v-text-field
+                type="number"
                 v-model="merchantCodeVerified.points"
                 outline
                 label="Points to be credited"
@@ -351,7 +363,8 @@
           loading: false,
           points: '',
           code: '',
-          remarks: ''
+          remarks: '',
+          spend: ''
         }
       }
     },
@@ -478,6 +491,7 @@
                   this.merchantCode.verfied = true
                   this.merchantCodeVerified.code = this.merchantCode.code
                   this.merchantCodeVerified.remarks = this.merchantCode.remarks
+                  this.merchantCodeVerified.spend = this.merchantCode.spend
                 }
               })
               .catch(err => {
@@ -508,6 +522,7 @@
                   campaign: this.$store.state.app.campaign.uuid,
                   code: this.merchantCodeVerified.code,
                   remarks: this.merchantCodeVerified.remarks,
+                  spend: this.merchantCodeVerified.spend,
                   points: this.merchantCodeVerified.points,
                   segments: this.merchantCodeVerified.segments
               })
@@ -530,6 +545,11 @@
               })
           }
         });
+      },
+
+      updatePoints() {
+        //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
+        this.merchantCodeVerified.points = parseFloat(((2 / 100) * this.merchantCodeVerified.spend).toFixed(0))
       }
     },
     watch: {

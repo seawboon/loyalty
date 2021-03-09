@@ -58,6 +58,19 @@
                   <v-text-field
                     :disabled="creditPoints.code !== false"
                     type="number"
+                    v-model="creditPoints.spend"
+                    @change="updatePoints"
+                    outline
+                    label="Spend Amount"
+                    prepend-inner-icon="toll"
+                    data-vv-name="spend"
+                    v-validate="'numeric|max_value:100000'"
+                    :error-messages="errors.collect('creditPoints.spend')"
+                  ></v-text-field>
+
+                  <v-text-field
+                    :disabled="creditPoints.code !== false"
+                    type="number"
                     v-model="creditPoints.points"
                     outline
                     label="Points to be credited"
@@ -163,7 +176,8 @@
           points: null,
           segments: [],
           code: false,
-          remarks: ''
+          remarks: '',
+          spend: null
         },
       }
     },
@@ -183,6 +197,7 @@
                   token: this.token,
                   points: this.creditPoints.points,
                   remarks: this.creditPoints.remarks,
+                  spend: this.creditPoints.spend,
                   segments: this.creditPoints.segments
               })
               .then(response => {
@@ -206,6 +221,10 @@
               })
           }
         });
+      },
+      updatePoints() {
+        //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
+        this.creditPoints.points = parseFloat(((2 / 100) * this.creditPoints.spend).toFixed(0))
       }
     },
     created () {
