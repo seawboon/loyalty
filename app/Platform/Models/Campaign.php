@@ -813,6 +813,7 @@ class Campaign extends Model implements HasMedia
 
       $website = [
         'uuid' => $this->uuid,
+        'earn_rule' => $this->earn_rule,
         'name' => $this->name,
         'title' => $topTitle,
         'headline' => $this->content['campaignHeadline'] ?? null,

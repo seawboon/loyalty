@@ -374,6 +374,7 @@
     data () {
       return {
         segments: [],
+        earnRule: this.$store.state.app.campaign.earn_rule,
         expires: [
           {value: 'hour', text: 'Expires in one hour'},
           {value: 'day', text: 'Expires in one day'},
@@ -563,7 +564,7 @@
       updatePoints() {
         //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
         //this.customerNumber.points = parseFloat(((2 / 100) * this.customerNumber.spend).toFixed(0))
-        this.customerNumber.points = ((2 / 100) * this.customerNumber.spend).toFixed(2)
+        this.customerNumber.points = ((this.earnRule / 100) * this.customerNumber.spend).toFixed(2)
       }
     },
     computed: {

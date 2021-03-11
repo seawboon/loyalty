@@ -170,6 +170,7 @@
         validToken: null,
         customer: null,
         credited: false,
+        earnRule: this.$store.state.app.campaign.earn_rule,
         segments: [],
         creditPoints: {
           loading: false,
@@ -225,7 +226,7 @@
       updatePoints() {
         //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
         //this.creditPoints.points = parseFloat(((2 / 100) * this.creditPoints.spend).toFixed(0))
-        this.creditPoints.points = ((2 / 100) * this.creditPoints.spend).toFixed(2)
+        this.creditPoints.points = ((this.earnRule / 100) * this.creditPoints.spend).toFixed(2)
       }
     },
     created () {

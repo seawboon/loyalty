@@ -334,6 +334,7 @@
         socket: null,
         connectionError: false,
         linkPointsCredited: null,
+        earnRule: this.$store.state.app.campaign.earn_rule,
         dialog: {
           authRequired: false,
           claim: {
@@ -550,7 +551,7 @@
       updatePoints() {
         //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
         //this.merchantCodeVerified.points = parseFloat(((2 / 100) * this.merchantCodeVerified.spend).toFixed(0))
-        this.merchantCodeVerified.points = ((2 / 100) * this.merchantCodeVerified.spend).toFixed(2)
+        this.merchantCodeVerified.points = ((this.earnRule / 100) * this.merchantCodeVerified.spend).toFixed(2)
       }
     },
     watch: {
