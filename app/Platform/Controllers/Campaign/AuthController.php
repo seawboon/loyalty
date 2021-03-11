@@ -15,6 +15,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Socialite;
+use Laravel\Socialite\Contracts\User as ProviderUser;
+use App\SocialFacebookAccount;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends \App\Http\Controllers\Controller
 {
@@ -28,7 +33,133 @@ class AuthController extends \App\Http\Controllers\Controller
     | It's designed for /api/ use with JSON responses.
     |
     */
+ /**
+   * Create a redirect method to facebook api.
+   *
+   * @return void
+   */
+    public function facebookRedirect(Request $request)
+    {
+     
+         session(['campaign_uuid' => $request->uuid]);
+         session(['campaign_url' => '/campaign/'.$request->url]);
+        
+        return Socialite::driver('facebook')->redirect();
+    }
+    
+    
+        /**
+     * Return a callback method from facebook api.
+     *
+     * @return callback URL from facebook
+     */
+    public function facebookCallback()
+    {
+        $this->facebookRegister(Socialite::driver('facebook')->user());        
+        $token = Crypt::encryptString(Socialite::driver('facebook')->user()->getId());
 
+        
+        $url = session('campaign_url').'?token='.$token;
+      
+        
+       
+        return redirect()->to($url)->header('Authorization', $token);
+    }
+    
+    public function facebookRegister(ProviderUser $providerUser){
+        
+    
+        $fb_account = SocialFacebookAccount::whereProvider('facebook')
+            ->whereProviderUserId($providerUser->getId())
+            ->first();
+            if ($fb_account) {
+                return $fb_account->user;
+            } else {
+                $fb_account = new SocialFacebookAccount([
+                    'provider_user_id' => $providerUser->getId(),
+                    'provider' => 'facebook'
+                ]);
+                $user = Customer::whereEmail($providerUser->getEmail())->first();
+                if (!$user) {
+                     $account = app()->make('account');
+                    $campaign_uuid = session('campaign_uuid');
+                    $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid($campaign_uuid)->firstOrFail();
+
+                    
+
+                    // Check if account limitations are reached
+                    $max = $campaign->user->plan_limitations['customers'];
+                    $count = count($campaign->user->customers);
+
+                    if ($count > $max && ! env('APP_DEMO', false)) {
+                      $email = new \stdClass;
+                      $email->app_name = $account->app_name;
+                      $email->app_url = '//' . $account->app_host;
+                      $email->from_name = $account->app_mail_name_from;
+                      $email->from_email = $account->app_mail_address_from;
+                      $email->to_name = $campaign->user->name;
+                      $email->to_email = $campaign->user->email;
+                      $email->subject = "Account limitation reached";
+                      $email->body_top = "A user (" . $providerUser->getEmail() . ") could not sign up on https:" . $campaign->url . " because the maximum amount of customers (" . $max . ") has been reached.";
+                      $email->cta_label = "Upgrade account";
+                      $email->cta_url = '//' . $account->app_host . '/go#/billing';
+                      $email->body_bottom = "Update your subscription to allow more customers to sign up.";
+
+                      Mail::send(new \App\Mail\SendMail($email));
+
+                      return response()->json([
+                        'status' => 'error',
+                        'error' => "limitation_reached"
+                      ], 422);
+                    }
+
+                    $locale = request('locale', config('system.default_language'));
+                    app()->setLocale($locale);
+
+                    $language = config('system.default_language');
+                    $timezone = config('system.default_timezone');
+
+                    $verification_code = Str::random(32);
+
+                    $customer_number = Core\Secure::getRandom(9, '1234567890');
+
+                    $user = new Customer;
+                    $user->account_id = $account->id;
+                    $user->campaign_id = $campaign->id;
+                    $user->created_by = $campaign->created_by;
+                    $user->role = 1;
+                    $user->active = 1;
+                    $user->customer_number = $customer_number;
+                    $user->name = $providerUser->getName();
+                    $user->email = $providerUser->getEmail();
+                    $user->password = bcrypt($providerUser->getEmail());
+                    $user->language = $language;
+                    $user->locale = $locale;
+                    $user->timezone = $timezone;
+                    $user->signup_ip_address = request()->ip();
+                    $user->verification_code = $verification_code;
+                    $user->save();
+
+                    $this->ensureNumberIsUnique($user);
+
+                    // Add points for signing up
+                    if ($campaign->signup_bonus_points > 0) {
+                      $history = new History;
+
+                      $history->customer_id = $user->id;
+                      $history->campaign_id = $campaign->id;
+                      $history->created_by = $campaign->created_by;
+                      $history->event = 'Sign up bonus';
+                      $history->points = $campaign->signup_bonus_points;
+                      $history->save();
+                    }
+
+                }
+                $fb_account->user()->associate($user);
+                $fb_account->save();
+                return $user;
+        }
+    }
     /**
      * Handle user registration.
      *
@@ -147,47 +278,74 @@ class AuthController extends \App\Http\Controllers\Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function login(Request $request) {
-      $v = Validator::make($request->all(), [
-        'email' => 'required|email|max:64',
-        'password' => 'required|min:6|max:24'
-      ]);
+     public function login(Request $request) {
+        
+      
+       
+       $token=$request->get('token','');
+       
+       if(empty($token)){
+            $v = Validator::make($request->all(), [
+                'email' => 'required|email|max:64',
+                'password' => 'required|min:6|max:24'
+              ]);
 
-      if ($v->fails()) {
-        return response()->json([
-          'status' => 'error',
-          'errors' => $v->errors()
-        ], 422);
-      }
+              if ($v->fails()) {
+                return response()->json([
+                  'status' => 'error',
+                  'errors' => $v->errors()
+                ], 422);
+              }
+              
+              $remember = (bool) $request->get('remember', false);
 
-      $remember = (bool) $request->get('remember', false);
+                $account = app()->make('account');
+                $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('uuid', 0))->firstOrFail();
 
-      $account = app()->make('account');
-      $campaign = \Platform\Models\Campaign::withoutGlobalScopes()->whereUuid(request('uuid', 0))->firstOrFail();
+                $credentials = $request->only('email', 'password');
+                $credentials['active'] = 1;
+                $credentials['account_id'] = $account->id;
+                $credentials['campaign_id'] = $campaign->id;
 
-      $credentials = $request->only('email', 'password');
-      $credentials['active'] = 1;
-      $credentials['account_id'] = $account->id;
-      $credentials['campaign_id'] = $campaign->id;
+                if ($token = $this->guard()->attempt($credentials, $remember)) {
+                  auth('customer')->user()->logins = auth('customer')->user()->logins + 1;
+                  auth('customer')->user()->last_login_ip_address =  request()->ip();
+                  auth('customer')->user()->last_login = Carbon::now('UTC');
+                  auth('customer')->user()->save();
+          /*
+                  $history = new History;
 
-      if ($token = $this->guard()->attempt($credentials, $remember)) {
-        auth('customer')->user()->logins = auth('customer')->user()->logins + 1;
-        auth('customer')->user()->last_login_ip_address =  request()->ip();
-        auth('customer')->user()->last_login = Carbon::now('UTC');
-        auth('customer')->user()->save();
-/*
-        $history = new History;
+                  $history->customer_id = auth('customer')->user()->id;
+                  $history->campaign_id = $campaign->id;
+                  $history->created_by = $campaign->created_by;
+                  $history->event = 'Sign in bonus';
+                  $history->points = 100;
+                  $history->save();
+          */
+                  return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
+                }
+                return response()->json(['error' => 'login_error'], 401);
+       }else{
+          
+           $fb_id = Crypt::decryptString($token);
+           $fb_account=SocialFacebookAccount::where('provider_user_id',$fb_id)->first();
+           if(!$fb_account)
+           {
+               return response()->json(['error' => 'login_error'], 401);
+           }
+           $user=$fb_account->user;
+           $token=$this->guard()->login($user);
+            auth('customer')->user()->logins = auth('customer')->user()->logins + 1;
+            auth('customer')->user()->last_login_ip_address =  request()->ip();
+            auth('customer')->user()->last_login = Carbon::now('UTC');
+            auth('customer')->user()->save();
+           return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
 
-        $history->customer_id = auth('customer')->user()->id;
-        $history->campaign_id = $campaign->id;
-        $history->created_by = $campaign->created_by;
-        $history->event = 'Sign in bonus';
-        $history->points = 100;
-        $history->save();
-*/
-        return response()->json(['status' => 'success'], 200)->header('Authorization', $token);
-      }
-      return response()->json(['error' => 'login_error'], 401);
+       }
+        
+     
+   
+      
     }
 
     /**

@@ -8,6 +8,10 @@
 Route::get('install', '\Platform\Controllers\InstallationController@getInstall')->name('installation');
 Route::post('install', '\Platform\Controllers\InstallationController@postInstall');
 
+Route::get('/campaign/login/facebook/redirect', '\Platform\Controllers\Campaign\AuthController@facebookRedirect');
+Route::get('/campaign/login/facebook/callback', '\Platform\Controllers\Campaign\AuthController@facebookCallback');
+
+      
 /* IMport customer
 Route::get('customer/import-export', 'DataTableController@importExport');
 Route::post('customer/import/today', 'DataTableController@import');

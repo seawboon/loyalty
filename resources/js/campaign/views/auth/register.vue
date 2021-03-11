@@ -93,6 +93,8 @@
               <v-btn color="primary" large block :loading="form1.loading" :disabled="form1.loading" type="submit" class="ml-0">{{ $t('create_account') }}</v-btn>
             </v-card-actions>
           </v-card>
+            <v-btn @click="toFacebook"  :disabled="form1.loading" large block text class="no-caps fb_btn  mt-1 mb-1"><v-icon size="16" class="mr-1">facebook</v-icon> Connect with Facebook</v-btn>
+
           <v-btn @click="toLogin" :disabled="form1.loading" large block text class="no-caps"><v-icon size="16" class="mr-1">arrow_back</v-icon> {{ $t('back_to_login') }}</v-btn>
         </v-form>
       </v-flex>
@@ -134,6 +136,10 @@
     methods: {
       toLogin() {
         this.$router.push({name: 'login'})
+      },
+      toFacebook() {
+       window.location.href = '/campaign/login/facebook/redirect?uuid='+this.$store.state.app.campaign.uuid+'&url='+this.$store.state.app.campaign.slug+'/login';
+
       },
       submitForm(formName) {
         this[formName].has_error = false
@@ -204,3 +210,9 @@
     },
   }
 </script>
+<style scoped>
+    .fb_btn{
+        background-color: #4267b2;
+        color:white
+    }
+</style>

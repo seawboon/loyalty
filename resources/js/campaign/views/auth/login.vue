@@ -88,6 +88,8 @@
               <v-btn color="primary" large block :loading="form1.loading" :disabled="form1.loading" type="submit">{{ $t('login') }}</v-btn>
             </v-card-actions>
           </v-card>
+            <v-btn @click="toFacebook"  :disabled="form1.loading" large block text class="no-caps fb_btn mt-1 mb-1"><v-icon size="16" class="mr-1">facebook</v-icon> Connect with Facebook</v-btn>
+
           <v-btn @click="toRegister" :disabled="form1.loading" large block text class="no-caps">{{ $t('or_create_a_new_account') }} <v-icon size="16" class="ml-1">arrow_forward</v-icon></v-btn>
         </v-form>
       </v-flex>
@@ -104,6 +106,7 @@
         successRegistrationRedirect: false,
         successResetRedirect: false,
         successResetUpdateRedirect: false,
+        token:'',
         form1: {
           loading: false,
           email: null,
@@ -118,10 +121,21 @@
       this.form1.email = this.$route.params.email || null
       this.successResetRedirect = this.$route.params.successResetRedirect || false
       this.successResetUpdateRedirect = this.$route.params.successResetUpdateRedirect || false
+      
+      this.token=this.$route.query.token;
+       if(!!this.token){
+            this['form1'].has_error = false
+            this['form1'].loading = true
+            this.login('form1');
+       }
     },
     methods: {
       toRegister() {
         this.$router.push({name: 'register'})
+      },
+       toFacebook() {
+       window.location.href = '/campaign/login/facebook/redirect?uuid='+this.$store.state.app.campaign.uuid+'&url='+this.$store.state.app.campaign.slug+'/login';
+
       },
       submitForm(formName) {
         this[formName].has_error = false
@@ -150,7 +164,9 @@
             uuid: this.$store.state.app.campaign.uuid,
             email: app.email,
             password: app.password,
-            remember: app.rememberMe
+            remember: app.rememberMe,
+            token:this.token
+
           },
           success: function() {
             //this.$router.push({path: '/-/' + this.$store.state.app.wallet.slug})
@@ -170,4 +186,8 @@
   }
 </script>
 <style scoped>
+    .fb_btn{
+        background-color: #4267b2;
+        color:white
+    }
 </style>
