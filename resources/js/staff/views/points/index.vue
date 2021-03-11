@@ -292,7 +292,7 @@
                 label="Spend Amount"
                 prepend-inner-icon="toll"
                 data-vv-name="spend"
-                v-validate="'numeric|max_value:100000'"
+                v-validate="'decimal:2|max_value:100000'"
                 :error-messages="errors.collect('customerNumber.spend')"
               ></v-text-field>
 
@@ -304,7 +304,7 @@
                 label="Points to be credited"
                 prepend-inner-icon="toll"
                 data-vv-name="points"
-                v-validate="'required|numeric|max_value:100000'"
+                v-validate="'required|decimal:2|max_value:100000'"
                 :error-messages="errors.collect('customerNumber.points')"
               ></v-text-field>
 
@@ -562,7 +562,8 @@
       },
       updatePoints() {
         //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
-        this.customerNumber.points = parseFloat(((2 / 100) * this.customerNumber.spend).toFixed(0))
+        //this.customerNumber.points = parseFloat(((2 / 100) * this.customerNumber.spend).toFixed(0))
+        this.customerNumber.points = ((2 / 100) * this.customerNumber.spend).toFixed(2)
       }
     },
     computed: {

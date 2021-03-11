@@ -246,7 +246,7 @@
                 prepend-inner-icon="toll"
                 data-vv-name="spend"
                 :data-vv-as="'Spend'"
-                v-validate="'numeric|max_value:100000'"
+                v-validate="'decimal:2|max_value:100000'"
                 :error-messages="errors.collect('merchantCodeVerified.spend')"
               ></v-text-field>
               <v-text-field
@@ -257,7 +257,7 @@
                 prepend-inner-icon="toll"
                 data-vv-name="points"
                 :data-vv-as="$t('points')"
-                v-validate="'required|numeric|max_value:100000'"
+                v-validate="'required|decimal:2|max_value:100000'"
                 :error-messages="errors.collect('merchantCodeVerified.points')"
               ></v-text-field>
               <v-autocomplete
@@ -549,7 +549,8 @@
 
       updatePoints() {
         //this.merchantCodeVerified.points = this.merchantCodeVerified.spend * 2
-        this.merchantCodeVerified.points = parseFloat(((2 / 100) * this.merchantCodeVerified.spend).toFixed(0))
+        //this.merchantCodeVerified.points = parseFloat(((2 / 100) * this.merchantCodeVerified.spend).toFixed(0))
+        this.merchantCodeVerified.points = ((2 / 100) * this.merchantCodeVerified.spend).toFixed(2)
       }
     },
     watch: {
