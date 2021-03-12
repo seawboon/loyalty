@@ -1,10 +1,10 @@
 <?php
 
+// File generated from our OpenAPI spec
+
 namespace Stripe;
 
 /**
- * Class EphemeralKey.
- *
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
  * @property int $created Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -17,11 +17,11 @@ class EphemeralKey extends ApiResource
 {
     const OBJECT_NAME = 'ephemeral_key';
 
-    use ApiOperations\Delete;
-
     use ApiOperations\Create {
         create as protected _create;
     }
+
+    use ApiOperations\Delete;
 
     /**
      * @param null|array $params

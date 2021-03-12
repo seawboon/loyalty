@@ -142,8 +142,8 @@ class Collection extends StripeObject implements \Countable, \IteratorAggregate
 
         while (true) {
             $filters = $this->filters ?: [];
-            if (\array_key_exists('ending_before', $filters) &&
-                !\array_key_exists('starting_after', $filters)) {
+            if (\array_key_exists('ending_before', $filters)
+                && !\array_key_exists('starting_after', $filters)) {
                 foreach ($page->getReverseIterator() as $item) {
                     yield $item;
                 }
@@ -239,6 +239,26 @@ class Collection extends StripeObject implements \Countable, \IteratorAggregate
         );
 
         return $this->all($params, $opts);
+    }
+
+    /**
+     * Gets the first item from the current page. Returns `null` if the current page is empty.
+     *
+     * @return null|\Stripe\StripeObject
+     */
+    public function first()
+    {
+        return \count($this->data) > 0 ? $this->data[0] : null;
+    }
+
+    /**
+     * Gets the last item from the current page. Returns `null` if the current page is empty.
+     *
+     * @return null|\Stripe\StripeObject
+     */
+    public function last()
+    {
+        return \count($this->data) > 0 ? $this->data[\count($this->data) - 1] : null;
     }
 
     private function extractPathAndUpdateParams($params)

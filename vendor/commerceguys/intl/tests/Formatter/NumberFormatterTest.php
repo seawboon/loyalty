@@ -7,11 +7,12 @@ use CommerceGuys\Intl\Exception\InvalidArgumentException;
 use CommerceGuys\Intl\Formatter\NumberFormatter;
 use CommerceGuys\Intl\NumberFormat\NumberFormat;
 use CommerceGuys\Intl\NumberFormat\NumberFormatRepository;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \CommerceGuys\Intl\Formatter\NumberFormatter
  */
-class NumberFormatterTest extends \PHPUnit_Framework_TestCase
+final class NumberFormatterTest extends TestCase
 {
     /**
      * @covers ::format
@@ -162,6 +163,8 @@ class NumberFormatterTest extends \PHPUnit_Framework_TestCase
             ['en', 'decimal', '5000000.5', '5,000,000.5'],
             ['bn', 'decimal', '-50.5', '-৫০.৫'],
             ['bn', 'decimal', '5000000.5', '৫০,০০,০০০.৫'],
+            ['de-AT', 'decimal', '-5000.00', '-5 000'],
+            ['fr-CH', 'decimal', '-5000.12', '-5 000,12'],
         ];
     }
 

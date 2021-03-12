@@ -10,12 +10,12 @@
         }
     ],
     "require": {
-        "php": "^7.0"
+        "php": "^7.0 || ^8.0"
     },
     "require-dev": {
         "umpirsky/list-generator": "^1.2",
         "slowprog/composer-copy-file": "^0.2",
-        "symfony/intl": "^4.2"
+        "symfony/intl": "^4.3"
     },
     "scripts": {
         "post-install-cmd": [

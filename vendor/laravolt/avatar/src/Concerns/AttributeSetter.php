@@ -8,11 +8,11 @@ trait AttributeSetter
 {
     public function setTheme($theme)
     {
-        if (!array_key_exists($theme, $this->themes)) {
-            return $this;
-        }
-
         if (is_string($theme) || is_array($theme)) {
+            if (is_string($theme) && !array_key_exists($theme, $this->themes)) {
+                return $this;
+            }
+
             $this->theme = $theme;
         }
 
@@ -60,10 +60,18 @@ trait AttributeSetter
         return $this;
     }
 
-    public function setBorder($size, $color)
+    public function setBorder($size, $color, $radius = 0)
     {
         $this->borderSize = $size;
         $this->borderColor = $color;
+        $this->borderRadius = $radius;
+
+        return $this;
+    }
+
+    public function setBorderRadius($radius)
+    {
+        $this->borderRadius = $radius;
 
         return $this;
     }

@@ -7,12 +7,25 @@ namespace Stripe;
  */
 class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
 {
+    /** @var Util\RequestOptions */
     protected $_opts;
+
+    /** @var array */
     protected $_originalValues;
+
+    /** @var array */
     protected $_values;
+
+    /** @var Util\Set */
     protected $_unsavedValues;
+
+    /** @var Util\Set */
     protected $_transientValues;
+
+    /** @var null|array */
     protected $_retrieveOptions;
+
+    /** @var null|ApiResponse */
     protected $_lastResponse;
 
     /**
@@ -156,7 +169,7 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
             return $this->_values[$k];
         }
         if (!empty($this->_transientValues) && $this->_transientValues->includes($k)) {
-            $class = \get_class($this);
+            $class = static::class;
             $attrs = \implode(', ', \array_keys($this->_values));
             $message = "Stripe Notice: Undefined property of {$class} instance: {$k}. "
                     . "HINT: The {$k} attribute was set in the past, however. "
@@ -168,7 +181,7 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
 
             return $nullval;
         }
-        $class = \get_class($this);
+        $class = static::class;
         Stripe::getLogger()->error("Stripe Notice: Undefined property of {$class} instance: {$k}");
 
         return $nullval;
@@ -330,14 +343,12 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
 
         // a `null` that makes it out of `serializeParamsValue` signals an empty
         // value that we shouldn't appear in the serialized form of the object
-        $updateParams = \array_filter(
+        return \array_filter(
             $updateParams,
             function ($v) {
                 return null !== $v;
             }
         );
-
-        return $updateParams;
     }
 
     public function serializeParamsValue($value, $original, $unsaved, $force, $key = null)
@@ -386,7 +397,7 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
                 // Sequential array, i.e. a list
                 $update = [];
                 foreach ($value as $v) {
-                    \array_push($update, $this->serializeParamsValue($v, null, true, $force));
+                    $update[] = $this->serializeParamsValue($v, null, true, $force);
                 }
                 // This prevents an array that's unchanged from being resent.
                 if ($update !== $this->serializeParamsValue($original, null, true, $force, $key)) {
@@ -430,7 +441,7 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
         };
 
         return \array_reduce(\array_keys($this->_values), function ($acc, $k) use ($maybeToArray) {
-            if ('_' === $k[0]) {
+            if ('_' === \substr((string) $k, 0, 1)) {
                 return $acc;
             }
             $v = $this->_values[$k];
@@ -456,7 +467,7 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
 
     public function __toString()
     {
-        $class = \get_class($this);
+        $class = static::class;
 
         return $class . ' JSON: ' . $this->toJSON();
     }
@@ -534,7 +545,7 @@ class StripeObject implements \ArrayAccess, \Countable, \JsonSerializable
     }
 
     /**
-     * @return object The last response from the Stripe API
+     * @return null|ApiResponse The last response from the Stripe API
      */
     public function getLastResponse()
     {
