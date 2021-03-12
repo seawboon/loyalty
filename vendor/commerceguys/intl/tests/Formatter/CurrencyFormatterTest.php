@@ -8,11 +8,12 @@ use CommerceGuys\Intl\Exception\InvalidArgumentException;
 use CommerceGuys\Intl\Formatter\CurrencyFormatter;
 use CommerceGuys\Intl\NumberFormat\NumberFormat;
 use CommerceGuys\Intl\NumberFormat\NumberFormatRepository;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \CommerceGuys\Intl\Formatter\CurrencyFormatter
  */
-class CurrencyFormatterTest extends \PHPUnit_Framework_TestCase
+final class CurrencyFormatterTest extends TestCase
 {
     /**
      * @covers ::format
@@ -196,6 +197,8 @@ class CurrencyFormatterTest extends \PHPUnit_Framework_TestCase
             ['bn', 'BND', 'standard', '-50.5', '-৫০.৫০BND'],
             ['bn', 'BND', 'accounting', '-50.5', '(৫০.৫০BND)'],
             ['bn', 'BND', 'standard', '500100.05', '৫,০০,১০০.০৫BND'],
+            ['de-AT', 'EUR', 'standard', '-1000.02', '-€ 1.000,02'],
+            ['fr-CH', 'CHF', 'standard', '-1000.02', '-1 000.02 CHF'],
         ];
     }
 

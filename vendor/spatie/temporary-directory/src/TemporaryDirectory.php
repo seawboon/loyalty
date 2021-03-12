@@ -143,6 +143,10 @@ class TemporaryDirectory
 
     protected function deleteDirectory(string $path): bool
     {
+        if (is_link($path)) {
+            return unlink($path);
+        }
+
         if (! file_exists($path)) {
             return true;
         }
@@ -156,6 +160,12 @@ class TemporaryDirectory
                 return false;
             }
         }
+
+        /*
+         * By forcing a php garbage collection cycle using gc_collect_cycles() we can ensure
+         * that the rmdir does not fail due to files still being reserved in memory.
+         */
+        gc_collect_cycles();
 
         return rmdir($path);
     }

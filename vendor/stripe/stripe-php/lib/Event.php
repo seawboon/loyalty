@@ -1,9 +1,43 @@
 <?php
 
+// File generated from our OpenAPI spec
+
 namespace Stripe;
 
 /**
- * Class Event.
+ * Events are our way of letting you know when something interesting happens in
+ * your account. When an interesting event occurs, we create a new
+ * <code>Event</code> object. For example, when a charge succeeds, we create a
+ * <code>charge.succeeded</code> event; and when an invoice payment attempt fails,
+ * we create an <code>invoice.payment_failed</code> event. Note that many API
+ * requests may cause multiple events to be created. For example, if you create a
+ * new subscription for a customer, you will receive both a
+ * <code>customer.subscription.created</code> event and a
+ * <code>charge.succeeded</code> event.
+ *
+ * Events occur when the state of another API resource changes. The state of that
+ * resource at the time of the change is embedded in the event's data field. For
+ * example, a <code>charge.succeeded</code> event will contain a charge, and an
+ * <code>invoice.payment_failed</code> event will contain an invoice.
+ *
+ * As with other API resources, you can use endpoints to retrieve an <a
+ * href="https://stripe.com/docs/api#retrieve_event">individual event</a> or a <a
+ * href="https://stripe.com/docs/api#list_events">list of events</a> from the API.
+ * We also have a separate <a
+ * href="http://en.wikipedia.org/wiki/Webhook">webhooks</a> system for sending the
+ * <code>Event</code> objects directly to an endpoint on your server. Webhooks are
+ * managed in your <a href="https://dashboard.stripe.com/account/webhooks">account
+ * settings</a>, and our <a href="https://stripe.com/docs/webhooks">Using
+ * Webhooks</a> guide will help you get set up.
+ *
+ * When using <a href="https://stripe.com/docs/connect">Connect</a>, you can also
+ * receive notifications of events that occur in connected accounts. For these
+ * events, there will be an additional <code>account</code> attribute in the
+ * received <code>Event</code> object.
+ *
+ * <strong>NOTE:</strong> Right now, access to events through the <a
+ * href="https://stripe.com/docs/api#retrieve_event">Retrieve Event API</a> is
+ * guaranteed only for 30 days.
  *
  * @property string $id Unique identifier for the object.
  * @property string $object String representing the object's type. Objects of the same type share the same value.
@@ -38,6 +72,7 @@ class Event extends ApiResource
     const APPLICATION_FEE_REFUNDED = 'application_fee.refunded';
     const APPLICATION_FEE_REFUND_UPDATED = 'application_fee.refund.updated';
     const BALANCE_AVAILABLE = 'balance.available';
+    const CAPABILITY_UPDATED = 'capability.updated';
     const CHARGE_CAPTURED = 'charge.captured';
     const CHARGE_EXPIRED = 'charge.expired';
     const CHARGE_FAILED = 'charge.failed';
@@ -51,6 +86,8 @@ class Event extends ApiResource
     const CHARGE_DISPUTE_FUNDS_WITHDRAWN = 'charge.dispute.funds_withdrawn';
     const CHARGE_DISPUTE_UPDATED = 'charge.dispute.updated';
     const CHARGE_REFUND_UPDATED = 'charge.refund.updated';
+    const CHECKOUT_SESSION_ASYNC_PAYMENT_FAILED = 'checkout.session.async_payment_failed';
+    const CHECKOUT_SESSION_ASYNC_PAYMENT_SUCCEEDED = 'checkout.session.async_payment_succeeded';
     const CHECKOUT_SESSION_COMPLETED = 'checkout.session.completed';
     const COUPON_CREATED = 'coupon.created';
     const COUPON_DELETED = 'coupon.deleted';
@@ -70,13 +107,20 @@ class Event extends ApiResource
     const CUSTOMER_SOURCE_UPDATED = 'customer.source.updated';
     const CUSTOMER_SUBSCRIPTION_CREATED = 'customer.subscription.created';
     const CUSTOMER_SUBSCRIPTION_DELETED = 'customer.subscription.deleted';
+    const CUSTOMER_SUBSCRIPTION_PENDING_UPDATE_APPLIED = 'customer.subscription.pending_update_applied';
+    const CUSTOMER_SUBSCRIPTION_PENDING_UPDATE_EXPIRED = 'customer.subscription.pending_update_expired';
     const CUSTOMER_SUBSCRIPTION_TRIAL_WILL_END = 'customer.subscription.trial_will_end';
     const CUSTOMER_SUBSCRIPTION_UPDATED = 'customer.subscription.updated';
+    const CUSTOMER_TAX_ID_CREATED = 'customer.tax_id.created';
+    const CUSTOMER_TAX_ID_DELETED = 'customer.tax_id.deleted';
+    const CUSTOMER_TAX_ID_UPDATED = 'customer.tax_id.updated';
     const FILE_CREATED = 'file.created';
     const INVOICE_CREATED = 'invoice.created';
     const INVOICE_DELETED = 'invoice.deleted';
+    const INVOICE_FINALIZATION_FAILED = 'invoice.finalization_failed';
     const INVOICE_FINALIZED = 'invoice.finalized';
     const INVOICE_MARKED_UNCOLLECTIBLE = 'invoice.marked_uncollectible';
+    const INVOICE_PAID = 'invoice.paid';
     const INVOICE_PAYMENT_ACTION_REQUIRED = 'invoice.payment_action_required';
     const INVOICE_PAYMENT_FAILED = 'invoice.payment_failed';
     const INVOICE_PAYMENT_SUCCEEDED = 'invoice.payment_succeeded';
@@ -95,10 +139,14 @@ class Event extends ApiResource
     const ISSUING_CARD_UPDATED = 'issuing_card.updated';
     const ISSUING_CARDHOLDER_CREATED = 'issuing_cardholder.created';
     const ISSUING_CARDHOLDER_UPDATED = 'issuing_cardholder.updated';
+    const ISSUING_DISPUTE_CLOSED = 'issuing_dispute.closed';
     const ISSUING_DISPUTE_CREATED = 'issuing_dispute.created';
+    const ISSUING_DISPUTE_FUNDS_REINSTATED = 'issuing_dispute.funds_reinstated';
+    const ISSUING_DISPUTE_SUBMITTED = 'issuing_dispute.submitted';
     const ISSUING_DISPUTE_UPDATED = 'issuing_dispute.updated';
     const ISSUING_TRANSACTION_CREATED = 'issuing_transaction.created';
     const ISSUING_TRANSACTION_UPDATED = 'issuing_transaction.updated';
+    const MANDATE_UPDATED = 'mandate.updated';
     const ORDER_CREATED = 'order.created';
     const ORDER_PAYMENT_FAILED = 'order.payment_failed';
     const ORDER_PAYMENT_SUCCEEDED = 'order.payment_succeeded';
@@ -108,8 +156,11 @@ class Event extends ApiResource
     const PAYMENT_INTENT_CANCELED = 'payment_intent.canceled';
     const PAYMENT_INTENT_CREATED = 'payment_intent.created';
     const PAYMENT_INTENT_PAYMENT_FAILED = 'payment_intent.payment_failed';
+    const PAYMENT_INTENT_PROCESSING = 'payment_intent.processing';
+    const PAYMENT_INTENT_REQUIRES_ACTION = 'payment_intent.requires_action';
     const PAYMENT_INTENT_SUCCEEDED = 'payment_intent.succeeded';
     const PAYMENT_METHOD_ATTACHED = 'payment_method.attached';
+    const PAYMENT_METHOD_AUTOMATICALLY_UPDATED = 'payment_method.automatically_updated';
     const PAYMENT_METHOD_CARD_AUTOMATICALLY_UPDATED = 'payment_method.card_automatically_updated';
     const PAYMENT_METHOD_DETACHED = 'payment_method.detached';
     const PAYMENT_METHOD_UPDATED = 'payment_method.updated';
@@ -125,9 +176,17 @@ class Event extends ApiResource
     const PLAN_CREATED = 'plan.created';
     const PLAN_DELETED = 'plan.deleted';
     const PLAN_UPDATED = 'plan.updated';
+    const PRICE_CREATED = 'price.created';
+    const PRICE_DELETED = 'price.deleted';
+    const PRICE_UPDATED = 'price.updated';
     const PRODUCT_CREATED = 'product.created';
     const PRODUCT_DELETED = 'product.deleted';
     const PRODUCT_UPDATED = 'product.updated';
+    const PROMOTION_CODE_CREATED = 'promotion_code.created';
+    const PROMOTION_CODE_DELETED = 'promotion_code.deleted';
+    const PROMOTION_CODE_UPDATED = 'promotion_code.updated';
+    const RADAR_EARLY_FRAUD_WARNING_CREATED = 'radar.early_fraud_warning.created';
+    const RADAR_EARLY_FRAUD_WARNING_UPDATED = 'radar.early_fraud_warning.updated';
     const RECIPIENT_CREATED = 'recipient.created';
     const RECIPIENT_DELETED = 'recipient.deleted';
     const RECIPIENT_UPDATED = 'recipient.updated';
@@ -138,6 +197,7 @@ class Event extends ApiResource
     const REVIEW_OPENED = 'review.opened';
     const SETUP_INTENT_CANCELED = 'setup_intent.canceled';
     const SETUP_INTENT_CREATED = 'setup_intent.created';
+    const SETUP_INTENT_REQUIRES_ACTION = 'setup_intent.requires_action';
     const SETUP_INTENT_SETUP_FAILED = 'setup_intent.setup_failed';
     const SETUP_INTENT_SUCCEEDED = 'setup_intent.succeeded';
     const SIGMA_SCHEDULED_QUERY_RUN_CREATED = 'sigma.scheduled_query_run.created';
